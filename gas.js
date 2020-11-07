@@ -65,10 +65,10 @@ class Timetree {
 function myFunction() {
 
   spreadSheet.open();
-  // Gmailから10件取得すること1時間置きに実行
-  const mails = getGmail(gmailApp.from, gmailApp.searchCount);
-  // Gmailから予約情報を取得。
-  const reserveMoments = extractReserveInfo(mails);
+  // Gmailから10件取得
+  const threads = getGmail(gmailApp.from, gmailApp.searchCount);
+  // Gmailから予約情報を取得
+  const reserveMoments = extractReserveInfo(threads);
 
   // スプレットシートからレコードを取得
   const records = getReserveRecords(spreadSheet.id, spreadSheet.title);
@@ -111,7 +111,7 @@ function extractReserveInfo(mails) {
         sentence.match(/^[A-Z][a-z]+ [A-Z]: /i))
       }) || [];
 
-      // 一致するものがない または ,が含まれていない MEMO: throw,catchにしたい
+      // 一致するものがないまたは「,」が含まれていない
       if (reserveInfo.length === 0 || reserveInfo[0].indexOf(',') === -1) return;
 
       const moment = createReserveInfo(reserveInfo[0].replace(':', ',').split(',').map(str => str.trim()));
@@ -166,7 +166,7 @@ function formatTimetreeData({moment, teacher, lecture_time}) {
     data: {
       attributes: {
         category: 'schedule',
-        title: 'Canbly',
+        title: 'Cambly',
         all_day: false,
         start_at: moment.toISOString(), // ISO8601
         start_timezone: 'UTC',
@@ -179,18 +179,3 @@ function formatTimetreeData({moment, teacher, lecture_time}) {
 }
 
 
-// デバック用 ------------------------------------------
-// Gmailから予約情報を取得する
-function debug_getRerveInfoFromGmail() {
-  const mails = getGmail('from:"help@cambly.com"', 5);
-  const reserveMoments = extractReserveInfo(mails);
-  Logger.log(reserveMoments)
-}
-
-// Gmailから予約情報を取得する
-function debug_getRerveRecords() {
-  const id = ''; // 各自id
-  const title = 'englishSchedule';
-  const recordes = getReserveRecords(id, title);
-  Logger.log(recordes);
-}
