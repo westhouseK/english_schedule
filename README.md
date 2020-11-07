@@ -2,4 +2,4 @@
 GAS上で動くスクリプトです。
 
 # フロー
-![](./flow.drawio)
+![](flow.drawio.svg)
